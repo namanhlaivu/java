@@ -12,16 +12,20 @@ import jakarta.validation.Valid;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/user")//đẩy API lên
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+
 public class UserController {
      UserService userService;
      // Tạo lên AIP
@@ -36,6 +40,9 @@ public class UserController {
     //Gọi API ALL
     @GetMapping
     List<User> getAllUsers() {
+       var authenticatiom = SecurityContextHolder.getContext().getAuthentication();
+       log.info("Username :{}", authenticatiom.getName());
+       authenticatiom.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
     return userService.getAllUsers();
     }
     //Gọi từng API theo ID
